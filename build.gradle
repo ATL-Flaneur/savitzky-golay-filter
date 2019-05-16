@@ -7,29 +7,81 @@
  */
 
 // Apply the java-library plugin to add support for Java Library
-apply plugin: 'java-library'
+
+apply plugin: "java-library"
+apply plugin: "maven"
+
+
+buildscript {
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
 
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+
+    maven {
+        credentials {
+            username di2eUser
+            password di2ePassword
+        }
+	// url "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Releases"
+        url "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Snapshots"	
+    }
 }
+
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api 'org.apache.commons:commons-math3:3.6.1'
+    api "org.apache.commons:commons-math3:3.6.1"
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:23.0'
+    implementation "com.google.guava:guava:23.0"
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    testImplementation "junit:junit:4.12"
 }
 
 test {
     systemProperties System.properties
     testLogging {
         showStandardStreams = true
+    }
+}
+
+
+uploadArchives {
+    dependsOn build
+
+    repositories {
+        mavenDeployer {
+           // repository(url: "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Releases") {
+           repository(url: "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Snapshots") {
+                authentication(userName: di2eUser, password: di2ePassword)
+            }
+  	    // pom.version = "1.0.0"
+	    pom.version = "1.0.0-SNAPSHOT"
+	    pom.artifactId = "sgfilter"
+            pom.groupId = "safm"
+        }
+    }
+}
+
+
+uploadArchives {
+    dependsOn build
+
+    repositories {
+        mavenDeployer {
+            // repository(url: "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Releases")
+	    repository(url: "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Snapshots") {
+	        authentication(userName: di2eUser, password: di2ePassword)
+   	    }
+	}
     }
 }
