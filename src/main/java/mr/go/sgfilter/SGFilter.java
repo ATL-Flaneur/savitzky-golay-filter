@@ -47,7 +47,7 @@ public class SGFilter {
    * @param nr
    *            number of future data points filter will use
    * @param degree
-   *            order of smoothin polynomial
+   *            order of smoothing polynomial
    * @return Savitzky-Golay coefficients
    * @throws IllegalArgumentException
    *             if {@code nl < 0} or {@code nr < 0} or {@code nl + nr <
