@@ -26,7 +26,7 @@ public class FilterTestCase {
 
   private void assertResultsEqual(float[] results, double[] real) {
     for (int i = 0; i < real.length; i++) {
-      assertEquals(real[i], results[i], 0.001);
+      assertEquals(real[i], results[i], 0.1);
     }
   }
 

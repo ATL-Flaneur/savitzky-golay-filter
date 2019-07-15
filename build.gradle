@@ -6,11 +6,10 @@
  * user guide available at https://docs.gradle.org/4.4.1/userguide/java_library_plugin.html
  */
 
-// Apply the java-library plugin to add support for Java Library
+// Apply the java-library plugin to add support for building a Java library.
 
 apply plugin: "java-library"
 apply plugin: "maven"
-
 
 buildscript {
     tasks.withType(JavaCompile) {
@@ -19,22 +18,26 @@ buildscript {
     }
 }
 
-// In this section you declare where to find the dependencies of your project
+
+// List repositories holding project dependencies.
+
 repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
+    // Add JCenter to list of repositories.
     jcenter()
 
+    // Specify access to DI2E Nexus repository.
     maven {
         credentials {
             username di2eUser
             password di2ePassword
         }
 	// url "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Releases"
-        url "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Snapshots"	
+        url "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Snapshots"
     }
 }
 
+
+// List project dependencies.
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
@@ -47,6 +50,7 @@ dependencies {
     testImplementation "junit:junit:4.12"
 }
 
+
 test {
     systemProperties System.properties
     testLogging {
@@ -55,9 +59,13 @@ test {
 }
 
 
-uploadArchives {
-    dependsOn build
+// Uploading to DI2E Nexus.
 
+uploadArchives {
+
+    // Build and test prior to uploading.
+    dependsOn build
+    
     repositories {
         mavenDeployer {
            // repository(url: "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Releases") {
@@ -69,19 +77,5 @@ uploadArchives {
 	    pom.artifactId = "sgfilter"
             pom.groupId = "safm"
         }
-    }
-}
-
-
-uploadArchives {
-    dependsOn build
-
-    repositories {
-        mavenDeployer {
-            // repository(url: "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Releases")
-	    repository(url: "https://nexus.di2e.net/nexus/content/repositories/Private_SPCTRM_Snapshots") {
-	        authentication(userName: di2eUser, password: di2ePassword)
-   	    }
-	}
     }
 }
